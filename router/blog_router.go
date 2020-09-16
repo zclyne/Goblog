@@ -92,5 +92,19 @@ func DeleteBlog(c *gin.Context) {
 
 func ListBlogsGroupedByYear(c *gin.Context) {
 	blogsGroupedByYear := service.ListBlogsGroupedByYear()
-	c.JSON(http.StatusOK, blogsGroupedByYear)
+	blogsViewGroupedByYear := make(map[string][]model_view.BlogView)
+	for year, blogs := range blogsGroupedByYear {
+		var blogsView []model_view.BlogView
+		for _, blog := range blogs {
+			blogType := service.GetTypeById(blog.TypeId)
+			tags := service.ListTagsByBlogId(blog.BlogId)
+			blogsView = append(blogsView, model_view.BlogView{
+				Blog: blog,
+				Type: blogType,
+				Tags: tags,
+			})
+		}
+		blogsViewGroupedByYear[year] = blogsView
+	}
+	c.JSON(http.StatusOK, blogsViewGroupedByYear)
 }

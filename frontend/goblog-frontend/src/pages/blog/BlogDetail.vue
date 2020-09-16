@@ -61,7 +61,7 @@
                     </q-item>
                     <q-separator spaced inset="item" v-if="index < comments.length - 1" />
                 </div>
-                <q-separator spaced />
+                <q-separator spaced v-if="comments.length > 0"/>
                 <!-- add comment area -->
                 <div class="q-mt-md q-mx-md">
                     <div class="text-h6">Leave Your Comment Here</div>

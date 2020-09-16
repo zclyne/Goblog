@@ -19,7 +19,7 @@
         },
         data () {
             return {
-                blogViewList: Array
+                blogViewList: []
             }
         },
         methods: {
@@ -36,7 +36,3 @@
         }
     }
 </script>
-
-<style>
-
-</style>
