@@ -66,6 +66,8 @@ func DeleteBlog(blogId string) error {
 		log.Printf("error occurred while deleting blog err is: %s\n", err)
 		return err
 	}
+	// TODO: delete association between this blog and the tags
+	db.Exec("DELETE FROM blog_tag WHERE blog_id = ?", blogId)
 	return nil
 }
 

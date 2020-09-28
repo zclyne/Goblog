@@ -71,14 +71,15 @@ func CreateBlog(c *gin.Context) {
 }
 
 func UpdateBlog(c *gin.Context) {
-	blog := model.Blog{}
-	if err := c.ShouldBind(&blog); err != nil {
+	blogView := model_view.BlogView{}
+	if err := c.ShouldBind(&blogView); err != nil {
 		log.Println(err)
-		c.JSON(http.StatusBadRequest, "error occurred while parsing blog, please check the input again")
+		c.JSON(http.StatusBadRequest, "error occurred while parsing blogView, please check the input again")
 	}
-	if err := service.UpdateBlog(&blog); err != nil {
+	if err := service.UpdateBlog(&blogView.Blog); err != nil {
 		c.JSON(http.StatusBadRequest, err)
 	}
+	service.SaveAssociationBetweenBlogAndTags(blogView.Blog.BlogId, blogView.Tags)
 	c.JSON(http.StatusAccepted, nil)
 }
 

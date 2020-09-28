@@ -14,6 +14,8 @@
                 <q-toolbar-title>
                     Goblog
                 </q-toolbar-title>
+
+                <q-btn flat label="ADMIN" to="/admin/login" />
             </q-toolbar>
         </q-header>
 

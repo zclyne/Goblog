@@ -72,8 +72,6 @@
                     <q-btn color="primary" label="Submit" class="float-right q-mt-md" @click="submitCommentBtnClick"/>
                 </div>
             </q-list>
-
-
         </div>
     </q-page>
 </template>
@@ -134,7 +132,7 @@
             }
         },
         mounted () {
-            axios.get('/api/blogs/' + this.$route.params.id)
+            axios.get('/api/blogs/' + this.$route.params.blog_id)
                 .then(this.getBlogByIdSuccess)
             this.refreshComments()
         }

@@ -29,7 +29,7 @@
 
             path: {
                 type: String,
-                default: '#'
+                default: '/'
             },
 
             icon: {

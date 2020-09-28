@@ -105,7 +105,9 @@ func InitRouter() {
 	// blogs api
 	apis.GET("/blogs", ListBlogs)
 	apis.POST("/blogs", CreateBlog)
+	apis.PUT("/blogs", UpdateBlog)
 	apis.GET("/blogs/:blog_id", GetBlog)
+	apis.DELETE("/blogs/:blog_id", DeleteBlog)
 	apis.GET("/blogs-count", GetBlogsCount)
 	apis.GET("blogs-archive", ListBlogsGroupedByYear)
 
