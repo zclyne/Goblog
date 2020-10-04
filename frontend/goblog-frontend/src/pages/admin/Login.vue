@@ -17,7 +17,7 @@
             <q-tab-panels v-model="tab" animated>
                 <q-tab-panel name="login">
                     <q-input label="Username" v-model="username" class="login-input-field"/>
-                    <q-input label="Password" v-model="password" class="login-input-field"/>
+                    <q-input label="Password" v-model="password" type="password" class="login-input-field"/>
                     <q-btn class="q-mt-md" color="primary" @click="login">Submit</q-btn>
                 </q-tab-panel>
                 <q-tab-panel name="register">
@@ -59,7 +59,10 @@
             loginSuccess (res) {
                 // TODO: prompt login successful
                 console.log(res)
-                this.$router.push('/')
+                // save user info in Vuex
+                this.$store.commit('user/saveUserToken', res.data.token)
+                // jump to the admin page
+                this.$router.push('/admin/blogs')
             },
             register () {
                 if (this.username === '' || this.password === '' || this.email === '') {

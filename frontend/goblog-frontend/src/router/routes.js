@@ -1,4 +1,5 @@
 import MainLayout from 'layouts/MainLayout'
+import AdminLayout from 'layouts/AdminLayout'
 import Index from 'pages/Index'
 import Blogs from 'pages/blog/Blogs'
 import BlogDetail from 'pages/blog/BlogDetail'
@@ -13,6 +14,29 @@ import TagsAdmin from 'pages/admin/TagsAdmin'
 import Login from 'pages/admin/Login'
 
 const routes = [
+    {
+        path: '/admin',
+        component: AdminLayout,
+        children: [
+            {
+                path: '/admin/blogs',
+                name: 'BlogsAdmin',
+                component: BlogsAdmin
+            }, {
+                path: '/admin/blogs/edit',
+                component: BlogEdit
+            }, {
+                path: '/admin/blogs/edit/:blog_id',
+                component: BlogEdit
+            }, {
+                path: '/admin/types',
+                component: TypesAdmin
+            }, {
+                path: '/admin/tags',
+                component: TagsAdmin
+            }
+        ]
+    },
     {
         path: '/',
         component: MainLayout,
@@ -38,23 +62,7 @@ const routes = [
             path: '/archives',
             component: Archives
         }, {
-            path: '/admin/blogs',
-            name: 'BlogsAdmin',
-            component: BlogsAdmin
-        }, {
-            path: '/admin/blogs/edit',
-            component: BlogEdit
-        }, {
-            path: '/admin/blogs/edit/:blog_id',
-            component: BlogEdit
-        }, {
-            path: '/admin/types',
-            component: TypesAdmin
-        }, {
-            path: '/admin/tags',
-            component: TagsAdmin
-        }, {
-            path: '/admin/login',
+            path: '/login',
             component: Login
         }
         ]

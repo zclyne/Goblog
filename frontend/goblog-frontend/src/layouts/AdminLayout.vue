@@ -12,10 +12,10 @@
                 />
 
                 <q-toolbar-title>
-                    Goblog
+                    Goblog Admin
                 </q-toolbar-title>
 
-                <q-btn flat label="ADMIN CONSOLE" to="/login" />
+                <q-btn flat label="LOGOUT" @click="logout" />
             </q-toolbar>
         </q-header>
 
@@ -54,39 +54,35 @@
 
     const linksData = [
         {
-            title: 'Blogs',
+            title: 'Blogs Admin',
             icon: 'article',
-            path: '/blogs'
+            path: '/admin/blogs'
         },
         {
-            title: 'Types',
+            title: 'Types Admin',
             icon: 'bookmark',
-            path: '/types'
+            path: '/admin/types'
         },
         {
-            title: 'Tags',
+            title: 'Tags Admin',
             icon: 'label',
-            path: '/tags'
-        },
-        {
-            title: 'Archives',
-            icon: 'archive',
-            path: '/archives'
-        },
-        {
-            title: 'About Me',
-            icon: 'account_circle',
-            path: '/about'
+            path: '/admin/tags'
         }
     ]
 
     export default {
-        name: 'MainLayout',
+        name: 'AdminLayout',
         components: { EssentialLink },
         data () {
             return {
                 leftDrawerOpen: true,
                 essentialLinks: linksData
+            }
+        },
+        methods: {
+            logout () {
+                this.$store.commit('user/deleteUserToken')
+                this.$router.push('/')
             }
         }
     }
