@@ -1,13 +1,15 @@
 <template>
     <q-page padding>
         <div class="tags-admin-container">
+            <message-banner :message="message" :showMessage="showMessage" />
             <q-list bordered class="rounded-borders shadow-3">
                 <q-item-label header>Create New Tag</q-item-label>
                 <q-item>
                     <q-input
                             style="width: 100%"
                             v-model="newTagName"
-                            label="Enter New Tag Name with 1~20 chars">
+                            label="Tag Name"
+                            hint="1~20 characters">
                         <template v-slot:append>
                             <q-btn flat dense round size="12px" icon="add" @click="createNewTag"></q-btn>
                         </template>
@@ -46,12 +48,18 @@
 
 <script>
     import axios from 'axios'
+    import MessageBanner from 'components/MessageBanner.vue'
     export default {
         name: 'TagsAdmin',
+        components: {
+            MessageBanner
+        },
         data () {
             return {
                 newTagName: '',
-                tagList: []
+                tagList: [],
+                message: '',
+                showMessage: false
             }
         },
         methods: {
@@ -69,7 +77,7 @@
                     name: this.newTagName
                 }).then(() => {
                     this.newTagName = ''
-                    this.refreshTagList()
+                    this.setMessageAndRefresh('Successfully created the new tag')
                 })
             },
             editTagName (tag) {
@@ -78,7 +86,16 @@
             },
             deleteTag (tag) {
                 axios.delete('/api/tags/' + tag.tag_id)
-                    .then(this.refreshTagList)
+                    .then(() => {
+                        this.setMessageAndRefresh('Successfully deleted the tag')
+                    })
+            },
+            setMessageAndRefresh (msg) {
+                this.message = msg
+                this.showMessage = true
+                this.refreshTagList()
+                window.clearTimeout(this.timer)
+                this.timer = window.setTimeout(() => {this.showMessage = false}, 3000)
             }
         },
         mounted () {

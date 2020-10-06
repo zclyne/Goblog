@@ -1,6 +1,7 @@
 <template>
     <q-page padding>
         <div class="blogs-admin-container">
+            <message-banner :message="message" :showMessage="showMessage" />
             <q-list bordered class="rounded-borders shadow-3">
                 <q-item-label header>
                     Blogs
@@ -26,11 +27,17 @@
 
 <script>
     import axios from 'axios'
+    import MessageBanner from 'components/MessageBanner.vue'
     export default {
         name: 'BlogsAdmin',
+        components: {
+            MessageBanner
+        },
         data () {
             return {
-                blogViewList: []
+                blogViewList: [],
+                messsage: '',
+                showMessage: false
             }
         },
         methods: {
@@ -53,7 +60,14 @@
             deleteBlog (blogView) {
                 const blogId = blogView.blog.blog_id
                 axios.delete('/api/blogs/' + blogId)
-                    .then(this.refreshBlogList)
+                    .then(this.setMessageAndRefresh('Successfully deleted the blog'))
+            },
+            setMessageAndRefresh (msg) {
+                this.message = msg
+                this.showMessage = true
+                this.refreshBlogList()
+                window.clearTimeout(this.timer)
+                this.timer = window.setTimeout(() => {this.showMessage = false}, 3000)
             }
         },
         mounted () {

@@ -100,7 +100,7 @@ func InitRouter() {
 	apis.POST("/user/register", UserRegister)
 
 	// authMiddlware only takes effect on the routers added after the authMiddlware is set
-	apis.Use(authMiddleware.MiddlewareFunc())
+	// apis.Use(authMiddleware.MiddlewareFunc())
 
 	// blogs api
 	apis.GET("/blogs", ListBlogs)

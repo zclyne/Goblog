@@ -1,13 +1,16 @@
 <template>
     <q-page padding>
         <div class="types-admin-container">
+            <message-banner :message="message" :showMessage="showMessage" />
             <q-list bordered class="rounded-borders shadow-3">
                 <q-item-label header>Create New Type</q-item-label>
                 <q-item>
                     <q-input
                             style="width: 100%"
                             v-model="newTypeName"
-                            label="Enter New Type Name with 1~20 chars">
+                            label="Type Name"
+                            hint="1~20 characters"
+                            :rules="[ typeName => typeName.length > 0 && typeName.length <= 20 || '1~20 characters']">
                         <template v-slot:append>
                             <q-btn flat dense round size="12px" icon="add" @click="createNewType"></q-btn>
                         </template>
@@ -46,12 +49,19 @@
 
 <script>
     import axios from 'axios'
+    import MessageBanner from 'components/MessageBanner.vue'
     export default {
         name: 'TypesAdmin',
+        components: {
+            MessageBanner
+        },
         data () {
             return {
                 newTypeName: '',
-                typeList: []
+                typeList: [],
+                message: '',
+                showMessage: false,
+                timer: null
             }
         },
         methods: {
@@ -65,11 +75,13 @@
                 }
             },
             createNewType () {
+                // check that newTypeName is valid
+
                 axios.post('/api/types', {
                     name: this.newTypeName
                 }).then(() => {
                     this.newTypeName = ''
-                    this.refreshTypeList()
+                    this.setMessageAndRefresh('Successfully created the type')
                 })
             },
             editTypeName (type) {
@@ -78,7 +90,16 @@
             },
             deleteType (type) {
                 axios.delete('/api/types/' + type.type_id)
-                    .then(this.refreshTypeList)
+                    .then(() => {
+                        this.setMessageAndRefresh('Successfully deleted the type')
+                    })
+            },
+            setMessageAndRefresh (msg) {
+                this.message = msg
+                this.showMessage = true
+                this.refreshTypeList()
+                window.clearTimeout(this.timer)
+                this.timer = window.setTimeout(() => {this.showMessage = false}, 3000)
             }
         },
         mounted () {
