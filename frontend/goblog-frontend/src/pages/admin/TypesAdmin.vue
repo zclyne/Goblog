@@ -1,7 +1,7 @@
 <template>
     <q-page padding>
         <div class="types-admin-container">
-            <message-banner :message="message" :showMessage="showMessage" />
+            <message-banner :message="message" :color="messageBannerColor" v-if="showMessage" @close="showMessage = false" />
             <q-list bordered class="rounded-borders shadow-3">
                 <q-item-label header>Create New Type</q-item-label>
                 <q-item>
@@ -9,13 +9,11 @@
                             style="width: 100%"
                             v-model="newTypeName"
                             label="Type Name"
-                            hint="1~20 characters"
-                            :rules="[ typeName => typeName.length > 0 && typeName.length <= 20 || '1~20 characters']">
+                            hint="1~20 characters">
                         <template v-slot:append>
                             <q-btn flat dense round size="12px" icon="add" @click="createNewType"></q-btn>
                         </template>
                     </q-input>
-
                 </q-item>
                 <q-separator spaced/>
                 <q-item-label header>Types</q-item-label>
@@ -28,7 +26,7 @@
                             <q-btn flat dense round size="12px" icon="edit">
                                 <q-popup-edit
                                         v-model="type.name"
-                                        :validate="typeName => {return typeName.length > 0 && typeName.length <= 20}"
+                                        :validate="typeName => {return typeName.length >= 0 && typeName.length <= 20}"
                                         @save="editTypeName(type)">
                                     <q-input
                                             v-model="type.name"
@@ -61,6 +59,7 @@
                 typeList: [],
                 message: '',
                 showMessage: false,
+                messageBannerColor: '',
                 timer: null
             }
         },
@@ -75,18 +74,24 @@
                 }
             },
             createNewType () {
-                // check that newTypeName is valid
-
+                if (!this.validateTypeName(this.newTypeName)) {
+                    return
+                }
                 axios.post('/api/types', {
                     name: this.newTypeName
                 }).then(() => {
-                    this.newTypeName = ''
                     this.setMessageAndRefresh('Successfully created the type')
+                    this.newTypeName = ''
                 })
             },
             editTypeName (type) {
+                if (!this.validateTypeName(this.newTypeName)) {
+                    return
+                }
                 axios.put('/api/types', type)
-                    .then(this.refreshTypeList)
+                    .then(() => {
+                        this.setMessageAndRefresh('Successfully edited the type')
+                    })
             },
             deleteType (type) {
                 axios.delete('/api/types/' + type.type_id)
@@ -95,9 +100,21 @@
                     })
             },
             setMessageAndRefresh (msg) {
-                this.message = msg
-                this.showMessage = true
+                this.setMessageAndColor(msg, 'bg-positive')
                 this.refreshTypeList()
+            },
+            validateTypeName (typeName) {
+                if (typeName.length > 0 && typeName.length <= 20) {
+                    return true
+                } else {
+                    this.setMessageAndColor('Type name should be of 1 ~ 20 characters', 'bg-red')
+                    return false
+                }
+            },
+            setMessageAndColor (msg, color) {
+                this.message = msg
+                this.messageBannerColor = color
+                this.showMessage = true
                 window.clearTimeout(this.timer)
                 this.timer = window.setTimeout(() => {this.showMessage = false}, 3000)
             }

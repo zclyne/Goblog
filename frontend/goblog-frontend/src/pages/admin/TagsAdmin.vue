@@ -1,7 +1,7 @@
 <template>
     <q-page padding>
         <div class="tags-admin-container">
-            <message-banner :message="message" :showMessage="showMessage" />
+            <message-banner :message="message" :show="showMessage"  />
             <q-list bordered class="rounded-borders shadow-3">
                 <q-item-label header>Create New Tag</q-item-label>
                 <q-item>
@@ -14,7 +14,6 @@
                             <q-btn flat dense round size="12px" icon="add" @click="createNewTag"></q-btn>
                         </template>
                     </q-input>
-
                 </q-item>
                 <q-separator spaced/>
                 <q-item-label header>Tags</q-item-label>
@@ -73,6 +72,9 @@
                 }
             },
             createNewTag () {
+                if (!this.validateTagName(this.newTagName)) {
+                    return
+                }
                 axios.post('/api/tags', {
                     name: this.newTagName
                 }).then(() => {
@@ -81,6 +83,9 @@
                 })
             },
             editTagName (tag) {
+                if (!this.validateTagName(tag.name)) {
+                    return
+                }
                 axios.put('/api/tags', tag)
                     .then(this.refreshTagList)
             },
@@ -96,6 +101,15 @@
                 this.refreshTagList()
                 window.clearTimeout(this.timer)
                 this.timer = window.setTimeout(() => {this.showMessage = false}, 3000)
+            },
+            validateTagName (tagName) {
+                if (tagName.length > 0 && tagName.length <= 20) {
+                    return true
+                } else {
+                    this.showMessage = true
+                    this.message = 'Tag name should be of 1 ~ 20 characters'
+                    return false
+                }
             }
         },
         mounted () {

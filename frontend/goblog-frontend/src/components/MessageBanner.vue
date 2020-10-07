@@ -5,11 +5,11 @@
         leave-active-class="animated fadeOut"
         >
         <q-banner
-            class="bg-positive text-white shadow-4 absolute-top message-banner"
+            class="text-white shadow-4 absolute-top message-banner"
+            :class="color"
             rounded
             dense
             inline-actions
-            v-if="showMessage"
             style="z-index: 99">
             {{message}}
             <template v-slot:action>
@@ -27,14 +27,13 @@ export default {
             type: String,
             required: true
         },
-        showMessage: {
-            type: Boolean,
-            required: true
-        },
-        methods: {
-            closeMessageBox () {
-                this.showMessage = false
-            }
+        color: {
+            type: String
+        }
+    },
+    methods: {
+        closeMessageBox () {
+            this.$emit('close')
         }
     }
 }
