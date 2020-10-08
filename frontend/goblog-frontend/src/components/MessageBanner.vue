@@ -13,7 +13,7 @@
             style="z-index: 99">
             {{message}}
             <template v-slot:action>
-                <q-btn flat color="white" label="GOT IT" @click="closeMessageBox" />
+                <slot name="action"></slot>
             </template>
         </q-banner>
     </transition>
@@ -29,12 +29,8 @@ export default {
         },
         color: {
             type: String
-        }
-    },
-    methods: {
-        closeMessageBox () {
-            this.$emit('close')
-        }
+        },
+
     }
 }
 </script>

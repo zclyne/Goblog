@@ -10,7 +10,7 @@
                 <div class="col">
                     <div class="column">
                         <div class="col-2 text-h5">Yifan Zhang</div>
-                    <div class="col text-grey-8">Software Developer Intern@VMware</div>
+                    <div class="col text-grey-8">MSCS@Columbia University</div>
                     </div>
                 </div>
             </q-card-section>

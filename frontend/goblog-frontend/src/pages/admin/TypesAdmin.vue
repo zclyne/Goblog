@@ -1,7 +1,15 @@
 <template>
     <q-page padding>
         <div class="types-admin-container">
-            <message-banner :message="message" :color="messageBannerColor" v-if="showMessage" @close="showMessage = false" />
+            <message-banner :message="message" :color="messageBannerColor" v-if="showMessage">
+                <template v-slot:action>
+                    <q-btn-group v-if="deleteBtnGroupShow" flat>
+                        <q-btn flat color="white" label="CONFIRM" @click="confirmDelete" />
+                        <q-btn flat color="white" label="CANCEL" @click="cancelDelete" />
+                    </q-btn-group>
+                    <q-btn flat color="white" label="GOT IT" v-else @click="closeMessageBox" />
+                </template>
+            </message-banner>
             <q-list bordered class="rounded-borders shadow-3">
                 <q-item-label header>Create New Type</q-item-label>
                 <q-item>
@@ -36,7 +44,7 @@
                                             hint="1~20 chars"></q-input>
                                 </q-popup-edit>
                             </q-btn>
-                            <q-btn flat dense round size="12px" icon="delete" @click="deleteType(type)"></q-btn>
+                            <q-btn flat dense round size="12px" icon="delete" @click="deleteTypeRequest(type)"></q-btn>
                         </div>
                     </q-item-section>
                 </q-item>
@@ -60,6 +68,8 @@
                 message: '',
                 showMessage: false,
                 messageBannerColor: '',
+                deleteBtnGroupShow: false,
+                typeToDelete: null,
                 timer: null
             }
         },
@@ -85,7 +95,7 @@
                 })
             },
             editTypeName (type) {
-                if (!this.validateTypeName(this.newTypeName)) {
+                if (!this.validateTypeName(type.name)) {
                     return
                 }
                 axios.put('/api/types', type)
@@ -93,14 +103,29 @@
                         this.setMessageAndRefresh('Successfully edited the type')
                     })
             },
-            deleteType (type) {
-                axios.delete('/api/types/' + type.type_id)
+            deleteTypeRequest (type) {
+                window.clearTimeout(this.timer)
+                this.deleteBtnGroupShow = true
+                this.typeToDelete = type
+                this.setMessageAndColor('Are you sure to delete this type?', 'bg-warning')
+            },
+            confirmDelete () {
+                this.showMessage = false
+                this.deleteBtnGroupShow = false
+                axios.delete('/api/types/' + this.typeToDelete.type_id)
                     .then(() => {
+                        this.typeToDelete = null
                         this.setMessageAndRefresh('Successfully deleted the type')
                     })
             },
+            cancelDelete () {
+                this.showMessage = false
+                this.deleteBtnGroupShow = false
+            },
             setMessageAndRefresh (msg) {
                 this.setMessageAndColor(msg, 'bg-positive')
+                window.clearTimeout(this.timer)
+                this.timer = window.setTimeout(this.closeMessageBox, 3000)
                 this.refreshTypeList()
             },
             validateTypeName (typeName) {
@@ -115,8 +140,9 @@
                 this.message = msg
                 this.messageBannerColor = color
                 this.showMessage = true
-                window.clearTimeout(this.timer)
-                this.timer = window.setTimeout(() => {this.showMessage = false}, 3000)
+            },
+            closeMessageBox () {
+                this.showMessage = false
             }
         },
         mounted () {

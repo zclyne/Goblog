@@ -1,7 +1,15 @@
 <template>
     <q-page padding>
         <div class="tags-admin-container">
-            <message-banner :message="message" :show="showMessage"  />
+            <message-banner :message="message" :color="messageBannerColor" v-if="showMessage">
+                <template v-slot:action>
+                    <q-btn-group v-if="deleteBtnGroupShow" flat>
+                        <q-btn flat color="white" label="CONFIRM" @click="confirmDelete" />
+                        <q-btn flat color="white" label="CANCEL" @click="cancelDelete" />
+                    </q-btn-group>
+                    <q-btn flat color="white" label="GOT IT" v-else @click="closeMessageBox" />
+                </template>
+            </message-banner>
             <q-list bordered class="rounded-borders shadow-3">
                 <q-item-label header>Create New Tag</q-item-label>
                 <q-item>
@@ -36,7 +44,7 @@
                                             hint="1~20 chars"></q-input>
                                 </q-popup-edit>
                             </q-btn>
-                            <q-btn flat dense round size="12px" icon="delete" @click="deleteTag(tag)"></q-btn>
+                            <q-btn flat dense round size="12px" icon="delete" @click="deleteTagRequest(tag)"></q-btn>
                         </div>
                     </q-item-section>
                 </q-item>
@@ -58,7 +66,11 @@
                 newTagName: '',
                 tagList: [],
                 message: '',
-                showMessage: false
+                showMessage: false,
+                messageBannerColor: '',
+                deleteBtnGroupShow: false,
+                tagToDelete: null,
+                timer: null
             }
         },
         methods: {
@@ -78,8 +90,8 @@
                 axios.post('/api/tags', {
                     name: this.newTagName
                 }).then(() => {
+                    this.setMessageAndRefresh('Successfully created the tag')
                     this.newTagName = ''
-                    this.setMessageAndRefresh('Successfully created the new tag')
                 })
             },
             editTagName (tag) {
@@ -87,29 +99,49 @@
                     return
                 }
                 axios.put('/api/tags', tag)
-                    .then(this.refreshTagList)
+                    .then(this.setMessageAndRefresh('Successfully edited the tag'))
             },
-            deleteTag (tag) {
-                axios.delete('/api/tags/' + tag.tag_id)
+            deleteTagRequest (tag) {
+                window.clearTimeout(this.timer)
+                this.deleteBtnGroupShow = true
+                this.tagToDelete = tag
+                this.setMessageAndColor('Are you sure to delete this tag?', 'bg-warning')
+                
+            },
+            confirmDelete () {
+                this.showMessage = false
+                this.deleteBtnGroupShow = false
+                axios.delete('/api/tags/' + this.tagToDelete.tag_id)
                     .then(() => {
+                        this.tagToDelete = null
                         this.setMessageAndRefresh('Successfully deleted the tag')
                     })
             },
+            cancelDelete () {
+                this.showMessage = false
+                this.deleteBtnGroupShow = false
+            },
             setMessageAndRefresh (msg) {
-                this.message = msg
-                this.showMessage = true
-                this.refreshTagList()
+                this.setMessageAndColor(msg, 'bg-positive')
                 window.clearTimeout(this.timer)
                 this.timer = window.setTimeout(() => {this.showMessage = false}, 3000)
+                this.refreshTagList()
             },
             validateTagName (tagName) {
                 if (tagName.length > 0 && tagName.length <= 20) {
                     return true
                 } else {
-                    this.showMessage = true
-                    this.message = 'Tag name should be of 1 ~ 20 characters'
+                    this.setMessageAndColor('Tag name should be of 1 ~ 20 characters', 'bg-red')
                     return false
                 }
+            },
+            setMessageAndColor (msg, color) {
+                this.message = msg
+                this.messageBannerColor = color
+                this.showMessage = true
+            },
+            closeMessageBox () {
+                this.showMessage = false
             }
         },
         mounted () {

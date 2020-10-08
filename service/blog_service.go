@@ -62,6 +62,7 @@ func UpdateBlog(blog *model.Blog) error {
 }
 
 func DeleteBlog(blogId string) error {
+	db.Exec("DELETE FROM blog_tag where blog_id = ?", blogId)
 	if err := db.Where("blog_id = ?", blogId).Delete(model.Blog{}).Error; err != nil {
 		log.Printf("error occurred while deleting blog err is: %s\n", err)
 		return err
