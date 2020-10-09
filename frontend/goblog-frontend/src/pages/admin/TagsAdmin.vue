@@ -105,7 +105,7 @@
                 window.clearTimeout(this.timer)
                 this.deleteBtnGroupShow = true
                 this.tagToDelete = tag
-                this.setMessageAndColor('Are you sure to delete this tag?', 'bg-warning')
+                this.setMessageAndColor('Confirm deleting this type', this.consts.MESSAGE_BOX_COLOR_WARNING)
                 
             },
             confirmDelete () {
@@ -116,22 +116,31 @@
                         this.tagToDelete = null
                         this.setMessageAndRefresh('Successfully deleted the tag')
                     })
+                    .catch((error) => {
+                        if (error.request.status === 400) {
+                            this.setMessageAndColor('Failed to delete the tag because some blogs belong to it', this.consts.MESSAGE_BOX_COLOR_NEGATIVE)
+                            this.setMessageBoxTimer(3000, this.closeMessageBox)
+                        }
+                    })
             },
             cancelDelete () {
                 this.showMessage = false
                 this.deleteBtnGroupShow = false
             },
             setMessageAndRefresh (msg) {
-                this.setMessageAndColor(msg, 'bg-positive')
-                window.clearTimeout(this.timer)
-                this.timer = window.setTimeout(() => {this.showMessage = false}, 3000)
+                this.setMessageAndColor(msg, this.consts.MESSAGE_BOX_COLOR_POSITIVE)
+                this.setMessageBoxTimer(3000, this.closeMessageBox)
                 this.refreshTagList()
+            },
+            setMessageBoxTimer (timeInMilliSecond, func) {
+                window.clearTimeout(this.timer)
+                this.timer = window.setTimeout(func, timeInMilliSecond)
             },
             validateTagName (tagName) {
                 if (tagName.length > 0 && tagName.length <= 20) {
                     return true
                 } else {
-                    this.setMessageAndColor('Tag name should be of 1 ~ 20 characters', 'bg-red')
+                    this.setMessageAndColor('Tag name should be of 1 ~ 20 characters', this.consts.MESSAGE_BOX_COLOR_NEGATIVE)
                     return false
                 }
             },

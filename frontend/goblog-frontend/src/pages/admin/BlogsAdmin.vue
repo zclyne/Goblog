@@ -3,8 +3,11 @@
         <div class="blogs-admin-container">
             <message-banner :message="message" :color="messageBannerColor" v-if="showMessage">
                 <template v-slot:action>
-                    <q-btn flat color="white" label="CONFIRM" @click="confirmDelete" />
-                    <q-btn flat color="white" label="CANCEL" @click="cancelDelete" />
+                    <q-btn-group v-if="deleteBtnGroupShow" flat>
+                        <q-btn flat color="white" label="CONFIRM" @click="confirmDelete" />
+                        <q-btn flat color="white" label="CANCEL" @click="cancelDelete" />
+                    </q-btn-group>
+                    <q-btn flat color="white" label="GOT IT" v-else @click="closeMessageBox" />
                 </template>
             </message-banner>
             <q-list bordered class="rounded-borders shadow-3">
@@ -44,6 +47,7 @@
                 messsage: '',
                 showMessage: false,
                 blogIdToDelete: '',
+                deleteBtnGroupShow: false,
                 timer: null
             }
         },
@@ -55,7 +59,6 @@
             listBlogsSuccess (res) {
                 if (res.data) {
                     this.blogViewList = res.data
-                    console.log(this.blogViewList)
                 }
             },
             createBlog () {
@@ -66,16 +69,19 @@
             },
             deleteBlogRequest (blogView) {
                 window.clearTimeout(this.timer)
+                this.deleteBtnGroupShow = true
                 this.blogIdToDelete = blogView.blog.blog_id
-                this.setMessageAndColor('Are you sure to delete this blog?', 'bg-warning')
+                this.setMessageAndColor('Confirm deleting this blog', this.consts.MESSAGE_BOX_COLOR_WARNING)
             },
             confirmDelete () {
                 this.showMessage = false
+                this.deleteBtnGroupShow = false
                 axios.delete('/api/blogs/' + this.blogIdToDelete)
                     .then(this.setMessageAndRefresh('Successfully deleted the blog'))
             },
             cancelDelete () {
                 this.showMessage = false
+                this.deleteBtnGroupShow = false
             },
             setMessageAndColor (msg, color) {
                 this.message = msg
@@ -83,10 +89,16 @@
                 this.showMessage = true
             },
             setMessageAndRefresh (msg) {
-                this.setMessageAndColor(msg, 'bg-primary')
+                this.setMessageAndColor(msg, this.consts.MESSAGE_BOX_COLOR_POSITIVE)
                 this.refreshBlogList()
+                this.setMessageBoxTimer(3000)
+            },
+            setMessageBoxTimer (timeInMilliSecond) {
                 window.clearTimeout(this.timer)
-                this.timer = window.setTimeout(() => {this.showMessage = false}, 3000)
+                this.timer = window.setTimeout(this.closeMessageBox, timeInMilliSecond)
+            },
+            closeMessageBox () {
+                this.showMessage = false
             }
         },
         mounted () {

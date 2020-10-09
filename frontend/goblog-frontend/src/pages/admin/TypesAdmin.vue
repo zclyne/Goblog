@@ -103,11 +103,19 @@
                         this.setMessageAndRefresh('Successfully edited the type')
                     })
             },
+            validateTypeName (typeName) {
+                if (typeName.length > 0 && typeName.length <= 20) {
+                    return true
+                } else {
+                    this.setMessageAndColor('Type name should be of 1 ~ 20 characters', this.consts.MESSAGE_BOX_COLOR_NEGATIVE)
+                    return false
+                }
+            },
             deleteTypeRequest (type) {
                 window.clearTimeout(this.timer)
                 this.deleteBtnGroupShow = true
                 this.typeToDelete = type
-                this.setMessageAndColor('Are you sure to delete this type?', 'bg-warning')
+                this.setMessageAndColor('Confirm deleting this type', this.consts.MESSAGE_BOX_COLOR_WARNING)
             },
             confirmDelete () {
                 this.showMessage = false
@@ -117,24 +125,25 @@
                         this.typeToDelete = null
                         this.setMessageAndRefresh('Successfully deleted the type')
                     })
+                    .catch((error) => {
+                        if (error.request.status === 400) {
+                            this.setMessageAndColor('Failed to delete the type because some blogs belong to it', this.consts.MESSAGE_BOX_COLOR_NEGATIVE)
+                            this.setMessageBoxTimer(3000, this.closeMessageBox)
+                        }
+                    })
             },
             cancelDelete () {
                 this.showMessage = false
                 this.deleteBtnGroupShow = false
             },
             setMessageAndRefresh (msg) {
-                this.setMessageAndColor(msg, 'bg-positive')
-                window.clearTimeout(this.timer)
-                this.timer = window.setTimeout(this.closeMessageBox, 3000)
+                this.setMessageAndColor(msg, this.consts.MESSAGE_BOX_COLOR_POSITIVE)
+                this.setMessageBoxTimer(3000, this.closeMessageBox)
                 this.refreshTypeList()
             },
-            validateTypeName (typeName) {
-                if (typeName.length > 0 && typeName.length <= 20) {
-                    return true
-                } else {
-                    this.setMessageAndColor('Type name should be of 1 ~ 20 characters', 'bg-red')
-                    return false
-                }
+            setMessageBoxTimer (timeInMilliSecond, func) {
+                window.clearTimeout(this.timer)
+                this.timer = window.setTimeout(func, timeInMilliSecond)
             },
             setMessageAndColor (msg, color) {
                 this.message = msg

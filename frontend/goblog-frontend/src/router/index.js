@@ -2,8 +2,10 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 
 import routes from './routes'
+import consts from '../constants/const.js'
 
 Vue.use(VueRouter)
+Vue.prototype.consts = consts
 
 /*
  * If not building with SSR mode, you can
