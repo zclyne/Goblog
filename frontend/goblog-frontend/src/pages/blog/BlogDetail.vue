@@ -66,7 +66,7 @@
                     <q-input label="Nickname" v-model="commenterNickname"></q-input>
                     <q-input label="Email" v-model="commenterEmail"></q-input>
                     <q-input label="Your Thoughts" type="textarea" v-model="commentContent"></q-input>
-                    <q-btn color="primary" label="Submit" class="float-right q-mt-md" @click="submitCommentBtnClick"/>
+                    <q-btn color="primary" label="Submit" class="float-right q-my-md" @click="submitCommentBtnClick"/>
                 </div>
             </q-list>
         </div>
