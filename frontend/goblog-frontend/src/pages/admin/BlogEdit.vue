@@ -98,10 +98,7 @@
             },
             getBlogByIdSuccess (res) {
                 if (res.data) {
-                    const blogView = res.data
-                    this.blog = blogView.blog
-                    this.type = blogView.type
-                    this.selectedTags = blogView.tags
+                    this.blogView = res.data
                 }
             },
             listTypesSuccess (res) {
@@ -148,7 +145,7 @@
             setMessageBoxTimer (timeInMilliSecond, func) {
                 window.clearTimeout(this.timer)
                 this.timer = window.setTimeout(func, timeInMilliSecond)
-            },
+            }
         },
         mounted () {
             axios.get('/api/types')

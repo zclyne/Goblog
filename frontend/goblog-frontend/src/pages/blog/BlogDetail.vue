@@ -6,7 +6,7 @@
                     <div class="text-h4">
                         {{blog.title}}
                     </div>
-                    <div class="text-grey-9">
+                    <div class="text-grey-9 q-my-md col-auto">
                         {{date}}
                     </div>
                 </div>
@@ -16,7 +16,7 @@
                     </q-chip>
                 </div>
             </div>
-            <div>
+            <div v-if="blog.image_url !== ''">
                 <q-img :src="blog.image_url"></q-img>
             </div>
             <div>

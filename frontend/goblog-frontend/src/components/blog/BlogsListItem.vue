@@ -1,22 +1,26 @@
 <template>
-    <q-card class="blog-list-item-card q-mt-md q-mx-auto shadow-5" @click="handleCardClick">
+    <q-card class="blog-list-item-card q-mx-auto shadow-5 cursor-pointer" @click="handleCardClick">
         <q-card-section horizontal>
-            <q-img ratio="4/3" class="col-3 blog-img" :src="blog.image_url" alt="" />
-            <q-card-section class="col-9">
+            <q-img ratio="4/3" v-if="blog.image_url !== ''" class="col-3 blog-img" :src="blog.image_url" alt="" />
+            <q-card-section class="col">
                 <!-- blog title and type area -->
                 <q-card-section class="text-h5" horizontal>
-                    <q-card-section class="col-9">
-                        {{blog.title}}
-                    </q-card-section>
-                    <q-card-section class="col-3">
-                        <q-chip outline color="secondary float-right" text-color="white" icon="bookmark">
-                            {{type.name}}
-                        </q-chip>
-                    </q-card-section>
+                    <div class="full-width row">
+                        <q-card-section class="col-9">
+                            {{blog.title}}
+                        </q-card-section>
+                        <q-card-section class="col-3">
+                            <q-chip outline color="secondary" text-color="white" icon="bookmark">
+                                {{type.name}}
+                            </q-chip>
+                        </q-card-section>
+                    </div>
                 </q-card-section>
                 <!-- blog content area -->
                 <q-card-section class="text-body1">
-                    {{blog.content}}
+                    <div class=blog-content>
+                        {{blog.content}}
+                    </div>
                 </q-card-section>
                 <!-- tags of this blog -->
                 <q-card-section horizontal>
@@ -64,9 +68,16 @@
     .blog-list-item-card {
         width: 100%;
         max-width: 1000px;
-        max-height: 300px;
+        max-height: 500px;
         overflow: hidden;
         text-decoration: none;
+    }
+    .blog-content {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 6;
+        -webkit-box-orient: vertical;
     }
     .blog-img {
         max-height: 100%;
