@@ -65,7 +65,7 @@
                     <div class="text-h6">Leave Your Comment Here</div>
                     <q-input label="Nickname" v-model="commenterNickname"></q-input>
                     <q-input label="Email" v-model="commenterEmail"></q-input>
-                    <q-input label="Your Thoughts" type="textarea" v-model="commentContent"></q-input>
+                    <q-input label="Comment Content" type="textarea" v-model="commentContent"></q-input>
                     <q-btn color="primary" label="Submit" class="float-right q-my-md" @click="submitCommentBtnClick"/>
                 </div>
             </q-list>
@@ -130,9 +130,13 @@
                         create_at: new Date()
                     }
                     axios.post('/api/comments', submitCommentRequest)
-                    .then(this.refreshComments)
-                    this.setMessageAndColor('Successfully added the comment', this.consts.MESSAGE_BOX_COLOR_POSITIVE)
-                    this.setMessageBoxTimer(3000, this.closeMessageBox)
+                        .then(() => {
+                            this.refreshComments()
+                            this.setMessageAndColor('Successfully added the comment', this.consts.MESSAGE_BOX_COLOR_POSITIVE)
+                            this.setMessageBoxTimer(3000, this.closeMessageBox)
+                        }).catch((error) => {
+                            this.setMessageAndColor(error, this.consts.MESSAGE_BOX_COLOR_NEGATIVE)
+                        })
                 }
             },
             refreshComments () {

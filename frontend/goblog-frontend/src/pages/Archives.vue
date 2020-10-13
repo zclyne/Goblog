@@ -1,7 +1,7 @@
 <template>
     <q-page padding>
         <div class="shadow-5 archives-container q-pa-md">
-            <div v-for="(blogs, key) in blogsGroupedByYear" :key="key">
+            <div class="q-gutter-y-md" v-for="(blogs, key) in blogsGroupedByYear" :key="key">
                 <div class="text-h3">{{key}}</div>
                 <q-separator />
                 <blogs-list-item

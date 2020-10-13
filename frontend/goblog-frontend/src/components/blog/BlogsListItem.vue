@@ -1,5 +1,5 @@
 <template>
-    <q-card class="blog-list-item-card q-mx-auto shadow-5 cursor-pointer" @click="handleCardClick">
+    <q-card class="blog-list-item-card q-mx-auto cursor-pointer" @click="handleCardClick">
         <q-card-section horizontal>
             <q-img ratio="4/3" v-if="blog.image_url !== ''" class="col-3 blog-img" :src="blog.image_url" alt="" />
             <q-card-section class="col">
@@ -10,7 +10,7 @@
                             {{blog.title}}
                         </q-card-section>
                         <q-card-section class="col-3">
-                            <q-chip outline color="secondary" text-color="white" icon="bookmark">
+                            <q-chip outline color="secondary" text-color="white" icon="bookmark" class="float-right">
                                 {{type.name}}
                             </q-chip>
                         </q-card-section>

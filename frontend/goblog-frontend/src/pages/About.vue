@@ -1,6 +1,6 @@
 <template>
     <q-page padding>
-        <q-card class="about-card">
+        <q-card class="about-card shadow-5">
             <q-card-section class="q-pa-md row" horizontal>
                 <div class="col-1">
                     <q-avatar size="50px" class="q-mb-sm">
@@ -34,8 +34,7 @@
                 </q-list>
             </q-card-section>
             <q-separator />
-            <q-card-actions>
-                
+            <q-card-actions class="q-pl-md">
                 <q-btn flat round icon="code">
                     <q-popup-proxy>
                         <q-banner>

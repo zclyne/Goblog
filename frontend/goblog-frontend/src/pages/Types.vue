@@ -14,7 +14,7 @@
                 </q-chip>
             </div>
             <q-separator />
-            <div class="q-pa-md">
+            <div class="q-pa-md q-gutter-y-md">
                 <blogs-list-item
                         v-for="item in blogViewList"
                         :key="item.blog_id"

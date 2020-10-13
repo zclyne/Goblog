@@ -1,6 +1,7 @@
 <template>
     <q-page padding class="q-gutter-y-md">
         <blogs-list-item
+                class="shadow-5"
                 v-for="item in blogViewList"
                 :key="item.blog_id"
                 :blog="item.blog"
